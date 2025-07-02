@@ -1,16 +1,4 @@
-// Default data
-let questions = [
-  {
-    "pytanie": "Co to jest HTML?",
-    "odpowiedzi": [
-      "Język programowania",
-      "Język znaczników",
-      "System operacyjny",
-      "Framework"
-    ],
-    "poprawna": "Język znaczników"
-  }
-];
+let questions = [];
 
 let currentIndex = 0;
 const questionEl = document.getElementById('question');
@@ -21,6 +9,33 @@ const questionInput = document.getElementById('questionInput');
 const answersInputs = document.getElementById('answersInputs');
 const correctSelect = document.getElementById('correctSelect');
 
+async function loadQuestions() {
+  try {
+    const res = await fetch('questions.json');
+    if (res.ok) {
+      questions = await res.json();
+    }
+  } catch (e) {
+    console.error('Błąd wczytywania questions.json', e);
+  }
+  if (questions.length === 0) {
+    questions = [
+      {
+        numer: 1,
+        pytanie: 'Co to jest HTML?',
+        odpowiedzi: {
+          '1': 'Język programowania',
+          '2': 'Język znaczników',
+          '3': 'System operacyjny',
+          '4': 'Framework'
+        },
+        poprawna: '2'
+      }
+    ];
+  }
+  displayQuestion(0);
+}
+
 function displayQuestion(index) {
   const q = questions[index];
   if (!q) {
@@ -30,10 +45,13 @@ function displayQuestion(index) {
     return;
   }
   questionEl.textContent = q.pytanie;
-  answersEl.innerHTML = q.odpowiedzi
-    .map(a => `<div class="border p-2 rounded">${a}</div>`) 
+  answersEl.innerHTML = Object.entries(q.odpowiedzi)
+    .map(
+      ([key, text]) =>
+        `<button class="answer border p-2 rounded cursor-pointer" data-key="${key}">${text}</button>`
+    )
     .join('');
-  correctEl.textContent = `Poprawna: ${q.poprawna}`;
+  correctEl.textContent = `Poprawna: ${q.odpowiedzi[q.poprawna] || ''}`;
   correctEl.classList.add('hidden');
   editForm.classList.add('hidden');
 }
@@ -48,16 +66,32 @@ document.getElementById('showAnswerBtn').addEventListener('click', () => {
   correctEl.classList.toggle('hidden');
 });
 
+answersEl.addEventListener('click', e => {
+  const btn = e.target.closest('.answer');
+  if (!btn) return;
+  const key = btn.dataset.key;
+  const q = questions[currentIndex];
+  correctEl.classList.remove('hidden');
+  if (key === q.poprawna) {
+    btn.classList.add('bg-green-200');
+  } else {
+    btn.classList.add('bg-red-200');
+  }
+});
+
 document.getElementById('editBtn').addEventListener('click', () => {
   if (!questions[currentIndex]) return;
   editForm.classList.toggle('hidden');
   const q = questions[currentIndex];
   questionInput.value = q.pytanie;
-  answersInputs.innerHTML = q.odpowiedzi
-    .map((a, i) => `<input class="p-2 border rounded" data-index="${i}" value="${a}">`)
+  answersInputs.innerHTML = Object.entries(q.odpowiedzi)
+    .map(
+      ([key, text]) =>
+        `<input class="p-2 border rounded" data-key="${key}" value="${text}">`
+    )
     .join('');
-  correctSelect.innerHTML = q.odpowiedzi
-    .map(a => `<option value="${a}">${a}</option>`)
+  correctSelect.innerHTML = Object.entries(q.odpowiedzi)
+    .map(([key, text]) => `<option value="${key}">${text}</option>`)
     .join('');
   correctSelect.value = q.poprawna;
 });
@@ -66,7 +100,10 @@ document.getElementById('saveBtn').addEventListener('click', () => {
   const q = questions[currentIndex];
   q.pytanie = questionInput.value;
   const inputs = answersInputs.querySelectorAll('input');
-  q.odpowiedzi = Array.from(inputs).map(inp => inp.value);
+  q.odpowiedzi = {};
+  inputs.forEach(inp => {
+    q.odpowiedzi[inp.dataset.key] = inp.value;
+  });
   q.poprawna = correctSelect.value;
   displayQuestion(currentIndex);
 });
@@ -79,18 +116,29 @@ document.getElementById('deleteBtn').addEventListener('click', () => {
 });
 
 document.getElementById('addBtn').addEventListener('click', () => {
-  const newQ = { pytanie: '', odpowiedzi: ['', '', '', ''], poprawna: '' };
+  const newNumber = questions.length
+    ? Math.max(...questions.map(q => q.numer || 0)) + 1
+    : 1;
+  const newQ = {
+    numer: newNumber,
+    pytanie: '',
+    odpowiedzi: { '1': '', '2': '', '3': '', '4': '' },
+    poprawna: '1'
+  };
   questions.push(newQ);
   currentIndex = questions.length - 1;
   editForm.classList.remove('hidden');
   questionInput.value = '';
-  answersInputs.innerHTML = newQ.odpowiedzi
-    .map((a, i) => `<input class="p-2 border rounded" data-index="${i}" value="">`)
+  answersInputs.innerHTML = Object.entries(newQ.odpowiedzi)
+    .map(
+      ([key, text]) =>
+        `<input class="p-2 border rounded" data-key="${key}" value="${text}">`
+    )
     .join('');
-  correctSelect.innerHTML = newQ.odpowiedzi
-    .map(a => `<option value="${a}">${a}</option>`)
+  correctSelect.innerHTML = Object.entries(newQ.odpowiedzi)
+    .map(([key, text]) => `<option value="${key}">${text}</option>`)
     .join('');
-  correctSelect.value = '';
+  correctSelect.value = newQ.poprawna;
 });
 
 // File load
@@ -124,5 +172,5 @@ function updateDownload() {
 }
 setInterval(updateDownload, 1000);
 
-// initial display
-displayQuestion(currentIndex);
+// initial load
+loadQuestions();
