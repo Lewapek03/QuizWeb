@@ -1,0 +1,13 @@
+[
+  {
+    "numer": 242,
+    "pytanie": "Dlugotrwale nadcisnienia tetnicze jest:",
+    "odpowiedzi": {
+      "1": "przyczyna niewydolnosci serca,",
+      "2": "czynnikiem ryzyka rozwoju miazdzycy,",
+      "3": "odpowiedz A i B,",
+      "4": "nadcisnieniem ciezkim."
+    },
+    "poprawna": "3"
+  }
+]
