@@ -1,6 +1,4 @@
-# QuizWeb
 
-Prosta aplikacja quizowa napisana w czystym HTML i JavaScript.
 Pytania znajdują się w pliku `questions.json` w formacie:
 
 ```json
@@ -26,4 +24,9 @@ nie powoduje konfliktów.
 ## Uruchomienie
 
 Pliki `index.html`, `script.js` i `questions.json` mozesz umiescic w repozytorium GitHub i wlaczyc GitHub Pages, aby aplikacja byla dostepna w przegladarce.
-Quiz przechowuje dane w pamięci przeglądarki i obsługuje wczytywanie i zapisywanie pliku JSON z pytaniami.
+=======
+
+## Uruchomienie
+
+Pliki `index.html` i `script.js` możesz umieścić w repozytorium GitHub i włączyć GitHub Pages, aby aplikacja była dostępna w przeglądarce.
+
