@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QuizWeb</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-4">
+  <div class="max-w-3xl mx-auto bg-white p-4 rounded shadow">
+    <h1 class="text-2xl font-bold mb-4">Quiz Web</h1>
+
+    <div class="mb-4 flex flex-wrap gap-2">
+      <button id="randomBtn" class="px-4 py-2 bg-blue-500 text-white rounded">Losuj pytanie</button>
+      <button id="showAnswerBtn" class="px-4 py-2 bg-green-500 text-white rounded">Pokaż odpowiedź</button>
+      <button id="editBtn" class="px-4 py-2 bg-yellow-500 text-white rounded">Zmień pytanie / odpowiedzi</button>
+      <button id="deleteBtn" class="px-4 py-2 bg-red-500 text-white rounded">Usuń pytanie</button>
+      <button id="addBtn" class="px-4 py-2 bg-purple-500 text-white rounded">Dodaj pytanie</button>
+    </div>
+
+    <div class="mb-4">
+      <label class="block mb-1 font-semibold">Pytanie:</label>
+      <div id="question" class="mb-2"></div>
+      <div id="answers" class="grid gap-2 grid-cols-1 sm:grid-cols-2"></div>
+      <div id="correct" class="text-green-600 font-semibold hidden"></div>
+    </div>
+
+    <div id="editForm" class="hidden mb-4">
+      <label class="block mb-1 font-semibold" for="questionInput">Pytanie</label>
+      <input id="questionInput" class="w-full p-2 border rounded mb-2">
+      <div id="answersInputs" class="grid gap-2 grid-cols-1 sm:grid-cols-2 mb-2"></div>
+      <label class="block mb-1 font-semibold">Poprawna odpowiedź</label>
+      <select id="correctSelect" class="p-2 border rounded mb-2"></select>
+      <button id="saveBtn" class="px-4 py-2 bg-blue-600 text-white rounded">Zapisz zmiany</button>
+    </div>
+
+    <div class="mt-4 flex flex-col sm:flex-row gap-2">
+      <input type="file" id="fileInput" class="border p-2">
+      <a id="downloadLink" class="px-4 py-2 bg-gray-300 rounded text-center" download="questions.json">Pobierz JSON</a>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
